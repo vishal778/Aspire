@@ -1,57 +1,63 @@
 import {useState} from 'react';
-import {HomeUseCases} from '../../../domain/usecases/homeUseCase';
-import {useDispatch, useSelector} from 'react-redux';
-import {changeTheme, setWeatherData} from '../../../redux/actions/homeActions';
-import {RootState} from '../../../redux/reducers';
-import {THEME} from '../../../redux/reducers/home';
+
+import {data, DataType, defaultActions} from '../../../components/data';
+import {getRandomColor} from '../../../service/utils/indes';
 
 const useHomeData = () => {
-  const [error, setError] = useState<string | null>(null);
-  const [currentCity, setCurrentCity] = useState<string>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const dispatch = useDispatch();
-  const {weatherData, theme} = useSelector(
-    (state: RootState) => state.HomeReducer,
-  );
-  const fetchWeatherOnCityName = async () => {
-    try {
-      setLoading(true);
-      const response = await HomeUseCases.getWeather(currentCity || '');
-      if (response && !isCityAlreadyAdded(response.city)) {
-        dispatch(setWeatherData(response));
-      }
-      setLoading(false);
-    } catch {
-      setError('Invalid city name');
-      setLoading(false);
+  const [name, setName] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cardsData, setCardsData] = useState(data);
+
+  const onAddCardPress = () => {
+    setModalVisible(true);
+  };
+
+  const onSubmitCardDetail = () => {
+    if (!name.trim()) {
+      return;
     }
+
+    const rawCardNumber = Array(16)
+      .fill(0)
+      .map(() => Math.floor(Math.random() * 10))
+      .join('');
+
+    const formattedNumber = rawCardNumber.match(/.{1,4}/g)?.join(' ') || '';
+
+    const randomCvv = Math.floor(100 + Math.random() * 900).toString();
+    const randomColor = getRandomColor();
+
+    const newCard: DataType = {
+      cardId: cardsData?.length + 1,
+      name: name,
+      number: formattedNumber,
+      exp: '12/29',
+      cvv: randomCvv,
+      type: 'visa',
+      image: require('../../../dls/assets/Visa.png'),
+      backgroundColor: randomColor,
+      defaultColor: randomColor,
+      isFreezed: false,
+      actions: defaultActions,
+    };
+    console.log('newCard--->', newCard);
+    setCardsData([newCard, ...cardsData]);
+    setName('');
+    setModalVisible(false);
   };
 
-  const isCityAlreadyAdded = (city: string) => {
-    return weatherData?.some(
-      item => item.city.toLowerCase() === city.toLowerCase(),
-    );
-  };
-
-  const toggleTheme = () => {
-    dispatch(changeTheme(theme === THEME.dark ? THEME.light : THEME.dark));
-  };
-
-  const updateCurrentCity = (city: string) => {
-    if (error) {
-      setError(null);
-    }
-    setCurrentCity(city);
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return {
-    fetchWeatherOnCityName,
-    error,
-    weatherData,
-    updateCurrentCity,
-    currentCity,
-    loading,
-    toggleTheme,
+    onAddCardPress,
+    onSubmitCardDetail,
+    modalVisible,
+    setName,
+    cardsData,
+    name,
+    closeModal,
   };
 };
 

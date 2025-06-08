@@ -1,77 +1,108 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
+  Alert,
+  Dimensions,
   Image,
+  Modal,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import CradSwipeScreen from '../../../components/cardCarousal';
+import {data, DataType, defaultActions} from '../../../components/data';
+import {getRandomColor} from '../../../service/utils/indes';
 import useHomeData from './presenter';
-import Loader from '../../../components/loader';
-import useTheme from '../../../dls/themeHook';
-import ThemeToggle from '../../../components/switch';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/reducers';
-import {THEME} from '../../../redux/reducers/home';
+
+const {height} = Dimensions.get('window');
 
 const Home = () => {
   const {
-    fetchWeatherOnCityName,
-    currentCity,
-    updateCurrentCity,
-    weatherData,
-    error,
-    loading,
-    toggleTheme,
+    modalVisible,
+    cardsData,
+    name,
+    onAddCardPress,
+    setName,
+    closeModal,
+    onSubmitCardDetail,
   } = useHomeData();
-
-  const colors = useTheme();
-  const theme = useSelector((state: RootState) => state.HomeReducer.theme);
-
   return (
-    <SafeAreaView
-      style={[styles.container, {backgroundColor: colors.primaryBackground}]}>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={{
+          borderWidth: 10,
+          borderColor: 'white',
+          alignSelf: 'center',
+          backgroundColor: 'white',
+          borderRadius: 4,
+          position: 'absolute',
+          top: 100,
+          right: 0,
+          zIndex: 10,
+        }}
+        onPress={onAddCardPress}>
+        <Text style={{fontSize: 14}}>Add new card</Text>
+      </TouchableOpacity>
       <View style={styles.header}>
-        <Text style={styles.themeText} onPress={toggleTheme}>
-          {`Switch to ${theme === THEME.dark ? 'light' : 'dark'} mode`}
-        </Text>
-        <ThemeToggle isEnabled={theme === THEME.dark} onToggle={toggleTheme} />
+        <View style={styles.topRow}>
+          <Text style={styles.title}>Debit Card</Text>
+          <Image
+            source={require('../../../dls/assets/Logo.png')}
+            style={{height: 25, width: 25}}
+          />
+        </View>
+
+        <View style={{marginTop: 24}}>
+          <Text style={styles.label}>Available balance</Text>
+          <View style={styles.amountRow}>
+            <View
+              style={{
+                backgroundColor: '#01D167',
+                paddingHorizontal: 12,
+                paddingVertical: 3,
+                borderRadius: 4,
+              }}>
+              <Text style={styles.currency}>$$</Text>
+            </View>
+            <Text style={styles.amount}>3,000</Text>
+          </View>
+        </View>
+        <Modal
+          transparent
+          animationType="fade"
+          visible={modalVisible}
+          onRequestClose={() => {}}>
+          <Pressable style={styles.overlay} onPress={closeModal}>
+            <View style={styles.modalContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your name"
+                value={name}
+                onChangeText={setName}
+              />
+
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={onSubmitCardDetail}>
+                <Text style={styles.submitText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modal>
       </View>
 
-      <TextInput
-        placeholder="Enter city name"
-        value={currentCity}
-        style={styles.input}
-        onChangeText={updateCurrentCity}
-      />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <Pressable onPress={fetchWeatherOnCityName} style={styles.button}>
-        <Text>Done</Text>
-      </Pressable>
-
-      {weatherData?.map(item => {
-        return (
-          <View
-            key={item.city}
-            style={[
-              styles.card,
-              {backgroundColor: colors.secondaryBackground},
-            ]}>
-            <Image source={{uri: item.icon}} style={styles.icon} />
-            <View style={styles.cityInfo}>
-              <Text style={styles.cityName}>{item.city}</Text>
-              <Text style={styles.condition}>{item.condition}</Text>
-            </View>
-            <View style={styles.tempContainer}>
-              <Text style={styles.temp}>{item.temperature}</Text>
-            </View>
-            <View style={styles.divider} />
-          </View>
-        );
-      })}
-      {loading ? <Loader /> : null}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
+          <CradSwipeScreen data={cardsData} />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -81,82 +112,95 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
+    backgroundColor: '#0C365A',
   },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: height / 3,
+    backgroundColor: '#0C365A',
+    padding: 16,
+    zIndex: 1,
+  },
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderColor: 'white',
+    alignItems: 'center',
+    paddingTop: 10,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: -26,
+  },
+  label: {
+    color: '#FFFFFF',
+  },
+  amountRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    margin: 10,
   },
-  themeText: {
+  currency: {
     color: 'white',
-    marginRight: 8,
+    fontSize: 12,
+  },
+  amount: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  scroll: {
+    flex: 1,
+    zIndex: 2,
+  },
+  scrollContent: {
+    paddingTop: height / 3 + 16,
+  },
+  content: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 16,
+    minHeight: height - height / 3,
+  },
+  text: {
+    fontSize: 100,
+    color: 'black',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)', // dark transparent overlay
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 24,
+    borderRadius: 12,
+    width: '80%',
+    elevation: 5,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#cccccc',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 4,
-    backgroundColor: '#ffffff',
-  },
-  button: {
-    alignSelf: 'center',
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: '#333333',
-    padding: 8,
-    borderRadius: 4,
-    backgroundColor: '#ffffff',
-  },
-  card: {
+    borderColor: '#ccc',
     borderRadius: 8,
-    flexDirection: 'row',
-    padding: 16,
-    marginTop: 24,
-    alignItems: 'center',
+    padding: 12,
+    marginBottom: 20,
   },
-  icon: {
-    height: 50,
-    width: 50,
+  submitButton: {
+    backgroundColor: '#0C365A',
+    paddingVertical: 12,
+    borderRadius: 8,
   },
-  cityInfo: {
-    marginLeft: 16,
-    justifyContent: 'center',
-  },
-  cityName: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 16,
-  },
-  condition: {
-    color: '#ffffff',
+  submitText: {
+    color: '#fff',
+    textAlign: 'center',
     fontWeight: '500',
-    fontSize: 12,
-  },
-  tempContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  temp: {
-    color: '#ffffff',
-    fontSize: 18,
-  },
-  divider: {
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    padding: 2,
-    borderRadius: 3,
-    alignSelf: 'center',
-    marginTop: -9,
-    marginLeft: 2,
-  },
-  errorText: {
-    color: 'white',
-    marginTop: 10,
+    fontSize: 24,
   },
 });
