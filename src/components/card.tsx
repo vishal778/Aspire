@@ -40,15 +40,9 @@ const Card = ({
 
   const pan = Gesture.Pan()
     .onUpdate(e => {
-      // e.translationX is the distance of the swipe
-      // e.translationX is positive if the swipe is to the right
-      // isSwipeRight is true if the swipe is to the right
       const isSwipeRight = e.translationX > 0;
-
-      // direction 1 is right, -1 is left
       direction.value = isSwipeRight ? 1 : -1;
 
-      // If the current index is the same as the index of the card
       if (currentIndex === index) {
         translateX.value = e.translationX;
         animatedValue.value = interpolate(
@@ -60,16 +54,12 @@ const Card = ({
     })
     .onEnd(e => {
       if (currentIndex === index) {
-        // If the swipe distance is greater than 150 or the swipe velocity is greater than 1000
-        // go to the next card
         if (Math.abs(e.translationX) > 150 || Math.abs(e.velocityX) > 1000) {
           translateX.value = withTiming(width * direction.value, {}, () => {
             runOnJS(setNewData)([...newData, newData[currentIndex]]);
             runOnJS(setCurrentIndex)(currentIndex + 1);
           });
           animatedValue.value = withTiming(currentIndex + 1);
-          // If the swipe distance is less than 150 or the swipe velocity is less than 1000
-          // go back to the original position
         } else {
           translateX.value = withTiming(0, {duration: 500});
           animatedValue.value = withTiming(currentIndex, {duration: 500});
@@ -125,54 +115,31 @@ const Card = ({
           {backgroundColor: item.backgroundColor, zIndex: dataLength - index},
           animatedStyle,
         ]}>
-        <View style={{alignSelf: 'flex-end'}}>
+        <View style={styles.logoWrapper}>
           <Image
             source={require('../dls/assets/AspireLogo.png')}
-            style={{height: 20, width: 80}}
+            style={styles.logo}
           />
         </View>
 
         <View>
-          <Text style={{fontSize: 24, color: '#FFFFFF', fontWeight: '800'}}>
-            {item?.name}
-          </Text>
+          <Text style={styles.cardName}>{item?.name}</Text>
 
-          <Text
-            style={{
-              marginTop: 24,
-              color: '#FFFFFF',
-              fontSize: 14,
-              letterSpacing: 1.5,
-              fontWeight: '500',
-            }}>
-            {item.number}
-          </Text>
+          <Text style={styles.cardNumber}>{item.number}</Text>
 
-          <View style={{flexDirection: 'row'}}>
+          <View style={styles.expiryRow}>
+            <Text style={styles.cardDetails}>{`Thru: ${item.exp}`}</Text>
             <Text
-              style={{
-                color: '#FFFFFF',
-                fontSize: 14,
-                marginTop: 14,
-                letterSpacing: 1.5,
-                fontWeight: '500',
-              }}>{`Thru: ${item.exp}`}</Text>
-
-            <Text
-              style={{
-                color: '#FFFFFF',
-                fontSize: 14,
-                marginTop: 14,
-                letterSpacing: 1.5,
-                fontWeight: '500',
-                marginLeft: 32,
-              }}>{`CVV: ${item.cvv}`}</Text>
+              style={[
+                styles.cardDetails,
+                styles.cvv,
+              ]}>{`CVV: ${item.cvv}`}</Text>
           </View>
 
-          <View style={{alignSelf: 'flex-end', marginTop: 4}}>
+          <View style={styles.visaWrapper}>
             <Image
               source={require('../dls/assets/Visa.png')}
-              style={{height: 20, width: 60}}
+              style={styles.visa}
             />
           </View>
         </View>
@@ -191,42 +158,44 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 24,
   },
-  top: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  logoWrapper: {
+    alignSelf: 'flex-end',
   },
-  textName: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  imageContainer: {
+  logo: {
+    height: 20,
     width: 80,
-    height: 40,
   },
-  image: {
-    width: 80,
-    height: 40,
-    resizeMode: 'contain',
+  cardName: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    fontWeight: '800',
   },
-  middle: {
-    flex: 2,
-    justifyContent: 'center',
+  cardNumber: {
+    marginTop: 24,
+    color: '#FFFFFF',
+    fontSize: 14,
+    letterSpacing: 1.5,
+    fontWeight: '500',
   },
-  textNumber: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
-  },
-  bottom: {
-    flex: 1,
+  expiryRow: {
     flexDirection: 'row',
-    gap: 56,
+  },
+  cardDetails: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    marginTop: 14,
+    letterSpacing: 1.5,
+    fontWeight: '500',
+  },
+  cvv: {
+    marginLeft: 32,
+  },
+  visaWrapper: {
+    alignSelf: 'flex-end',
+    marginTop: 4,
+  },
+  visa: {
+    height: 20,
+    width: 60,
   },
 });

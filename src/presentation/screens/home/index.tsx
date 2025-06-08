@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   Modal,
@@ -14,8 +13,6 @@ import {
   View,
 } from 'react-native';
 import CradSwipeScreen from '../../../components/cardCarousal';
-import {data, DataType, defaultActions} from '../../../components/data';
-import {getRandomColor} from '../../../service/utils/indes';
 import useHomeData from './presenter';
 
 const {height} = Dimensions.get('window');
@@ -30,65 +27,49 @@ const Home = () => {
     closeModal,
     onSubmitCardDetail,
   } = useHomeData();
+
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={{
-          borderWidth: 10,
-          borderColor: 'white',
-          alignSelf: 'center',
-          backgroundColor: 'white',
-          borderRadius: 4,
-          position: 'absolute',
-          top: 100,
-          right: 0,
-          zIndex: 10,
-        }}
-        onPress={onAddCardPress}>
-        <Text style={{fontSize: 14}}>Add new card</Text>
+      <TouchableOpacity style={styles.addButton} onPress={onAddCardPress}>
+        <Text style={styles.addButtonText}>Add new card</Text>
       </TouchableOpacity>
+
       <View style={styles.header}>
-        <View style={styles.topRow}>
-          <Text style={styles.title}>Debit Card</Text>
+        <View style={styles.headerTopRow}>
+          <Text style={styles.headerTitle}>Debit Card</Text>
           <Image
             source={require('../../../dls/assets/Logo.png')}
-            style={{height: 25, width: 25}}
+            style={styles.logo}
           />
         </View>
 
-        <View style={{marginTop: 24}}>
-          <Text style={styles.label}>Available balance</Text>
-          <View style={styles.amountRow}>
-            <View
-              style={{
-                backgroundColor: '#01D167',
-                paddingHorizontal: 12,
-                paddingVertical: 3,
-                borderRadius: 4,
-              }}>
-              <Text style={styles.currency}>$$</Text>
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceLabel}>Available balance</Text>
+          <View style={styles.balanceRow}>
+            <View style={styles.currencyTag}>
+              <Text style={styles.currencyText}>$$</Text>
             </View>
-            <Text style={styles.amount}>3,000</Text>
+            <Text style={styles.balanceAmount}>3,000</Text>
           </View>
         </View>
+
         <Modal
           transparent
           animationType="fade"
           visible={modalVisible}
           onRequestClose={() => {}}>
           <Pressable style={styles.overlay} onPress={closeModal}>
-            <View style={styles.modalContainer}>
+            <View style={styles.modal}>
               <TextInput
                 style={styles.input}
                 placeholder="Enter your name"
                 value={name}
                 onChangeText={setName}
               />
-
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={onSubmitCardDetail}>
-                <Text style={styles.submitText}>Submit</Text>
+                <Text style={styles.submitButtonText}>Submit</Text>
               </TouchableOpacity>
             </View>
           </Pressable>
@@ -99,7 +80,7 @@ const Home = () => {
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
+        <View style={styles.whiteSheet}>
           <CradSwipeScreen data={cardsData} />
         </View>
       </ScrollView>
@@ -124,31 +105,43 @@ const styles = StyleSheet.create({
     padding: 16,
     zIndex: 1,
   },
-  topRow: {
+  headerTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderColor: 'white',
     alignItems: 'center',
     paddingTop: 10,
   },
-  title: {
+  headerTitle: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: -26,
   },
-  label: {
+  logo: {
+    height: 25,
+    width: 25,
+  },
+  balanceContainer: {
+    marginTop: 24,
+  },
+  balanceLabel: {
     color: '#FFFFFF',
   },
-  amountRow: {
+  balanceRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  currency: {
+  currencyTag: {
+    backgroundColor: '#01D167',
+    paddingHorizontal: 12,
+    paddingVertical: 3,
+    borderRadius: 4,
+  },
+  currencyText: {
     color: 'white',
     fontSize: 12,
   },
-  amount: {
+  balanceAmount: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
@@ -161,24 +154,34 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingTop: height / 3 + 16,
   },
-  content: {
+  whiteSheet: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 16,
     minHeight: height - height / 3,
   },
-  text: {
-    fontSize: 100,
-    color: 'black',
+  addButton: {
+    borderWidth: 10,
+    borderColor: 'white',
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    borderRadius: 4,
+    position: 'absolute',
+    top: 100,
+    right: 0,
+    zIndex: 10,
+  },
+  addButtonText: {
+    fontSize: 14,
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)', // dark transparent overlay
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContainer: {
+  modal: {
     backgroundColor: '#fff',
     padding: 24,
     borderRadius: 12,
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
   },
-  submitText: {
+  submitButtonText: {
     color: '#fff',
     textAlign: 'center',
     fontWeight: '500',
