@@ -19,6 +19,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../navigators/types';
 import Header from '../../components/Header';
 import {calculateOrderSummary} from '../../../service/utils';
+import colors from '../../../dls/colors';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Cart'>;
 
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     margin: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 10,
     elevation: 2,
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   qtyBtn: {
-    backgroundColor: '#eee',
+    backgroundColor: colors.greyeee,
     padding: 8,
     borderRadius: 6,
   },
@@ -149,10 +150,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   summary: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderTopWidth: 1,
-    borderColor: '#eee',
+    borderColor: colors.greyeee,
     position: 'absolute',
     bottom: 0,
     width: '100%',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   checkoutText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

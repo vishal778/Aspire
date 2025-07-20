@@ -16,6 +16,7 @@ import Header from '../../components/Header';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../navigators/types';
 import {debounce} from '../../../service/utils';
+import colors from '../../../dls/colors';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Search'>;
 
@@ -90,16 +91,16 @@ const styles = StyleSheet.create({
     margin: 12,
     padding: 10,
     borderRadius: 8,
-    borderColor: '#ccc',
+    borderColor: colors.greycc,
     borderWidth: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
     borderBottomWidth: 1,
-    borderColor: '#eee',
+    borderColor: colors.greyeee,
   },
   image: {
     width: 64,
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   desc: {
-    color: '#666',
+    color: colors.grey66,
     fontSize: 12,
     marginTop: 2,
   },

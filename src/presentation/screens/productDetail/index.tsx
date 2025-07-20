@@ -15,6 +15,7 @@ import {RootStackParamList} from '../../../navigators/types';
 import {RootState} from '../../../redux/reducers';
 import {addToCart, removeFromCart} from '../../../redux/actions/cartActions';
 import Header from '../../components/Header';
+import colors from '../../../dls/colors';
 
 const {width} = Dimensions.get('window');
 
@@ -52,7 +53,7 @@ const ProductDetailsScreen = () => {
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: '#f9f9f9'}}>
+    <View style={{flex: 1, backgroundColor: colors.whitef9}}>
       <Header title="Product Details" showBack showCart />
 
       <View style={styles.carouselWrapper}>
@@ -119,7 +120,7 @@ const ProductDetailsScreen = () => {
 const styles = StyleSheet.create({
   carouselWrapper: {
     height: 300,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   image: {
     width,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   dot: {
     width: 8,
     height: 8,
-    backgroundColor: '#ccc',
+    backgroundColor: colors.greycc,
     borderRadius: 4,
     margin: 4,
   },
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   details: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     marginTop: 8,
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   desc: {
-    color: '#444',
+    color: colors.grey444,
     fontSize: 14,
     marginBottom: 20,
   },
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   cartText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

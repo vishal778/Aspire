@@ -18,6 +18,7 @@ import {RootStackParamList} from '../../../navigators/types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../components/Header';
 import BannerSlider from '../../components/BannersSlider';
+import colors from '../../../dls/colors';
 
 type HomeNav = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -69,7 +70,7 @@ const HomeScreen = () => {
           <TouchableOpacity
             style={styles.searchBar}
             onPress={() => navigation.navigate('Search')}>
-            <Ionicons name="search" size={18} color="#666" />
+            <Ionicons name="search" size={18} color={colors.grey66} />
             <Text style={styles.searchPlaceholder}>Search products...</Text>
           </TouchableOpacity>
         </View>
@@ -112,12 +113,12 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#f5f5f5'},
+  container: {flex: 1, backgroundColor: colors.whitef5},
   loaderContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
   scrollContainer: {paddingBottom: 40, paddingHorizontal: 12},
   searchWrapper: {paddingHorizontal: 12, paddingVertical: 8},
   searchBar: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   },
   searchPlaceholder: {
     marginLeft: 8,
-    color: '#666',
+    color: colors.grey66,
   },
   sectionTitle: {
     fontSize: 18,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     width: 140,
     marginRight: 10,
     borderRadius: 8,
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   tagText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 10,
     fontWeight: 'bold',
   },
