@@ -17,8 +17,8 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../navigators/types';
-import {calculateOrderSummary} from '../../../domain/utils/calculateSummary';
 import Header from '../../components/Header';
+import {calculateOrderSummary} from '../../../service/utils';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Cart'>;
 
@@ -31,7 +31,7 @@ const CartScreen = () => {
 
   const renderItem = ({item}: any) => (
     <View style={styles.item}>
-      <Image source={{uri: item.product.images[0]}} style={styles.image} />
+      <Image source={item.product.images[0]} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{item.product.name}</Text>
         <Text style={styles.price}>₹{item.product.price}</Text>
@@ -68,7 +68,7 @@ const CartScreen = () => {
         data={cart}
         renderItem={renderItem}
         keyExtractor={item => item.product.id}
-        contentContainerStyle={{paddingBottom: 100}}
+        contentContainerStyle={{paddingBottom: 220}}
       />
 
       {cart.length > 0 && (

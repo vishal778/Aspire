@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   View,
   TextInput,
@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/Header';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../navigators/types';
+import {debounce} from '../../../service/utils';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Search'>;
 
@@ -24,26 +25,34 @@ const SearchScreen = () => {
   const [query, setQuery] = useState('');
   const [filtered, setFiltered] = useState<Product[]>([]);
 
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((text: string) => {
+        const keyword = text.trim().toLowerCase();
+        if (keyword === '') {
+          setFiltered([]);
+        } else {
+          setFiltered(
+            products.filter(
+              p =>
+                p.name.toLowerCase().includes(keyword) ||
+                p.description.toLowerCase().includes(keyword),
+            ),
+          );
+        }
+      }, 300),
+    [products],
+  );
+
   useEffect(() => {
-    const keyword = query.trim().toLowerCase();
-    if (keyword === '') {
-      setFiltered([]);
-    } else {
-      setFiltered(
-        products.filter(
-          p =>
-            p.name.toLowerCase().includes(keyword) ||
-            p.description.toLowerCase().includes(keyword),
-        ),
-      );
-    }
-  }, [query, products]);
+    debouncedSearch(query);
+  }, [query, debouncedSearch]);
 
   const renderItem = ({item}: {item: Product}) => (
     <TouchableOpacity
       style={styles.item}
       onPress={() => navigation.navigate('ProductDetails', {product: item})}>
-      <Image source={{uri: item.images[0]}} style={styles.image} />
+      <Image source={item.images?.[0]} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.price}>₹{item.price}</Text>
@@ -56,7 +65,7 @@ const SearchScreen = () => {
 
   return (
     <View style={{flex: 1}}>
-      <Header title="Search" showBack />
+      <Header title="Search" showBack showCart />
 
       <TextInput
         placeholder="Type to search..."

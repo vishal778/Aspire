@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  ImageSourcePropType,
 } from 'react-native';
 import {useRoute, useNavigation, RouteProp} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -46,13 +47,13 @@ const ProductDetailsScreen = () => {
     dispatch(removeFromCart(product.id));
   };
 
-  const renderImage = ({item}: {item: string}) => (
-    <Image source={{uri: item}} style={styles.image} />
+  const renderImage = ({item}: {item: ImageSourcePropType}) => (
+    <Image source={item} style={styles.image} />
   );
 
   return (
     <View style={{flex: 1, backgroundColor: '#f9f9f9'}}>
-      <Header title="Product Details" showBack />
+      <Header title="Product Details" showBack showCart />
 
       <View style={styles.carouselWrapper}>
         <FlatList
@@ -97,7 +98,7 @@ const ProductDetailsScreen = () => {
             <TouchableOpacity
               onPress={() => navigation.navigate('Cart')}
               style={styles.checkoutBtn}>
-              <Text style={styles.cartText}>Checkout</Text>
+              <Text style={styles.cartText}>View Cart</Text>
             </TouchableOpacity>
             <View style={styles.qtyWrapper}>
               <TouchableOpacity onPress={decreaseQty}>
