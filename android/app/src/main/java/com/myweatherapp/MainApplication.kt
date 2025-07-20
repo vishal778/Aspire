@@ -1,4 +1,4 @@
-package com.aspireapp
+package com.Noon
 
 import android.app.Application
 import com.facebook.react.PackageList
