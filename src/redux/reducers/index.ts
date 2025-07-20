@@ -1,18 +1,11 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {combineReducers} from 'redux';
-import {persistReducer} from 'redux-persist';
+import productReducer from './productReducer';
+import cartReducer from './cartReducer';
 
-import HomeReducer from './home';
-
-const homeReducerPersistConfig = {
-  key: 'homeReducerPersistConfig',
-  storage: AsyncStorage,
-  whitelist: [],
-};
 const rootReducer = combineReducers({
-  HomeReducer: persistReducer(homeReducerPersistConfig, HomeReducer),
+  productState: productReducer,
+  cartState: cartReducer,
 });
 
-export interface RootState {}
-
+export type RootState = ReturnType<typeof rootReducer>;
 export default rootReducer;
